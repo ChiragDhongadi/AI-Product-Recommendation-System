@@ -8,5 +8,13 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
-  envPrefix: ['VITE_', 'GROQ_']
+  envPrefix: ['VITE_', 'GROQ_'],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      }
+    }
+  }
 })
