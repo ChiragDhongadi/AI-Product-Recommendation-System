@@ -16,11 +16,23 @@ function getMockRecommendations(preference, products = []) {
   } else if (query.includes("laptop") || query.includes("computer") || query.includes("notebook")) {
     category = "Laptop";
   } else if (query.includes("headphone") || query.includes("earbud") || query.includes("sound") || query.includes("audio")) {
-    category = "Headphones";
+    if (!query.includes("speaker")) {
+      category = "Headphones";
+    } else {
+      category = "Speaker";
+    }
   } else if (query.includes("tablet") || query.includes("ipad") || query.includes("tab")) {
     category = "Tablet";
   } else if (query.includes("reader") || query.includes("kindle") || query.includes("book")) {
     category = "E-reader";
+  } else if (query.includes("watch") || query.includes("smartwatch") || query.includes("wearable")) {
+    category = "Smartwatch";
+  } else if (query.includes("speaker") || query.includes("music") || query.includes("soundbar")) {
+    category = "Speaker";
+  } else if (query.includes("gaming") || query.includes("console") || query.includes("game") || query.includes("play")) {
+    category = "Gaming";
+  } else if (query.includes("accessories") || query.includes("keyboard") || query.includes("mouse")) {
+    category = "Accessories";
   }
 
   // 2. Detect price limit (e.g. "under $500", "below 100")
@@ -32,6 +44,14 @@ function getMockRecommendations(preference, products = []) {
   }
 
   // Filter products
+  const isTextSearch = (category === null && priceLimit === null);
+  let searchWords = [];
+  if (isTextSearch) {
+    const stopWords = new Set(["i", "want", "to", "buy", "a", "the", "for", "in", "of", "and", "is", "it", "with", "an", "on", "at", "my", "need", "looking", "get", "some"]);
+    const words = query.match(/\b\w+\b/g) || [];
+    searchWords = words.filter(w => !stopWords.has(w));
+  }
+
   matchedProducts = products.filter(p => {
     let matchesCategory = !category || p.category === category;
     let matchesPrice = !priceLimit || p.price <= priceLimit;
@@ -41,6 +61,15 @@ function getMockRecommendations(preference, products = []) {
       matchesPrice = matchesPrice && p.price < 200;
     } else if (query.includes("premium") || query.includes("pro") || query.includes("high-end") || query.includes("expensive")) {
       matchesPrice = matchesPrice && p.price > 500;
+    }
+
+    if (isTextSearch) {
+      if (searchWords.length > 0) {
+        const prodText = `${p.name} ${p.category} ${p.blurb}`.toLowerCase();
+        const matchesSearch = searchWords.some(w => prodText.includes(w));
+        return matchesSearch && matchesPrice;
+      }
+      return false;
     }
 
     return matchesCategory && matchesPrice;

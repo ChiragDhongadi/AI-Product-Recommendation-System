@@ -183,11 +183,22 @@ def get_mock_recommendations(preference: str) -> Dict[str, Any]:
     elif "laptop" in query or "computer" in query or "notebook" in query:
         category = "Laptop"
     elif "headphone" in query or "earbud" in query or "sound" in query or "audio" in query:
-        category = "Headphones"
+        if "speaker" not in query:
+            category = "Headphones"
+        else:
+            category = "Speaker"
     elif "tablet" in query or "ipad" in query or "tab" in query:
         category = "Tablet"
     elif "reader" in query or "kindle" in query or "book" in query:
         category = "E-reader"
+    elif "watch" in query or "smartwatch" in query or "wearable" in query:
+        category = "Smartwatch"
+    elif "speaker" in query or "music" in query or "soundbar" in query:
+        category = "Speaker"
+    elif "gaming" in query or "console" in query or "game" in query or "play" in query:
+        category = "Gaming"
+    elif "accessories" in query or "keyboard" in query or "mouse" in query:
+        category = "Accessories"
 
     # 2. Detect price limit
     price_limit = None
@@ -197,6 +208,13 @@ def get_mock_recommendations(preference: str) -> Dict[str, Any]:
         price_limit = int(price_match.group(1))
 
     # Filter products
+    is_text_search = (category is None and price_limit is None)
+    search_words = []
+    if is_text_search:
+        stop_words = {"i", "want", "to", "buy", "a", "the", "for", "in", "of", "and", "is", "it", "with", "an", "on", "at", "my", "need", "looking", "get", "some"}
+        words = re.findall(r'\b\w+\b', query)
+        search_words = [w for w in words if w not in stop_words]
+
     for p in PRODUCTS:
         matches_category = not category or p["category"] == category
         matches_price = not price_limit or p["price"] <= price_limit
@@ -207,8 +225,18 @@ def get_mock_recommendations(preference: str) -> Dict[str, Any]:
         elif "premium" in query or "pro" in query or "high-end" in query or "expensive" in query:
             matches_price = matches_price and p["price"] > 500
 
-        if matches_category and matches_price:
-            matched_products.append(p)
+        if is_text_search:
+            if search_words:
+                prod_text = (p["name"] + " " + p["category"] + " " + p["blurb"]).lower()
+                matches_search = any(w in prod_text for w in search_words)
+            else:
+                matches_search = False
+            
+            if matches_search and matches_price:
+                matched_products.append(p)
+        else:
+            if matches_category and matches_price:
+                matched_products.append(p)
 
     # Fallbacks
     if not matched_products:
