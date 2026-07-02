@@ -11,16 +11,16 @@ function getMockRecommendations(preference, products = []) {
 
   // 1. Detect category keyword
   let category = null;
-  if (query.includes("phone") || query.includes("mobile")) {
-    category = "Phone";
-  } else if (query.includes("laptop") || query.includes("computer") || query.includes("notebook")) {
-    category = "Laptop";
-  } else if (query.includes("headphone") || query.includes("earbud") || query.includes("sound") || query.includes("audio")) {
+  if (query.includes("headphone") || query.includes("earbud") || query.includes("sound") || query.includes("audio")) {
     if (!query.includes("speaker")) {
       category = "Headphones";
     } else {
       category = "Speaker";
     }
+  } else if (query.includes("phone") || query.includes("mobile")) {
+    category = "Phone";
+  } else if (query.includes("laptop") || query.includes("computer") || query.includes("notebook")) {
+    category = "Laptop";
   } else if (query.includes("tablet") || query.includes("ipad") || query.includes("tab")) {
     category = "Tablet";
   } else if (query.includes("reader") || query.includes("kindle") || query.includes("book")) {

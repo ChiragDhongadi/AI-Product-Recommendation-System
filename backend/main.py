@@ -178,15 +178,15 @@ def get_mock_recommendations(preference: str) -> Dict[str, Any]:
     
     # 1. Detect category keyword
     category = None
-    if "phone" in query or "mobile" in query:
-        category = "Phone"
-    elif "laptop" in query or "computer" in query or "notebook" in query:
-        category = "Laptop"
-    elif "headphone" in query or "earbud" in query or "sound" in query or "audio" in query:
+    if "headphone" in query or "earbud" in query or "sound" in query or "audio" in query:
         if "speaker" not in query:
             category = "Headphones"
         else:
             category = "Speaker"
+    elif "phone" in query or "mobile" in query:
+        category = "Phone"
+    elif "laptop" in query or "computer" in query or "notebook" in query:
+        category = "Laptop"
     elif "tablet" in query or "ipad" in query or "tab" in query:
         category = "Tablet"
     elif "reader" in query or "kindle" in query or "book" in query:
