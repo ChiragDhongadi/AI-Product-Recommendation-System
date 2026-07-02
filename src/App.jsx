@@ -185,14 +185,7 @@ export default function App() {
         </section>
       </main>
 
-      {/* Footer section */}
-      <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12 border-t border-slate-950 text-center text-xs text-slate-500">
-        <p>© 2026 SmartMatch AI. Built for technical interview verification purposes.</p>
-        <p className="mt-1.5 flex items-center justify-center gap-1.5">
-          <HelpCircle className="w-3.5 h-3.5" />
-          Powered by Groq's <code className="text-slate-400 font-mono">qwen3.6-27b</code> model.
-        </p>
-      </footer>
+
     </div>
   );
 }
